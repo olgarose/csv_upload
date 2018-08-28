@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% import 'macros.html' as macros %}
+{% block content %}
+
+<div class="col-md-4 col-md-offset-4">
+
+      <div align="center">
+        <h2>CSV Upload</h2>
+
+      <form action = "message" method = "POST"
+         enctype = "multipart/form-data">
+          <br><br><br>
+         <input type = "file" name = "file" />
+          <br><br>
+          <a href="upload"><button type="submit" class="btn btn-primary">Submit</button></a>
+      </form>
+      </div>
+</div>
+
+{% endblock %}
