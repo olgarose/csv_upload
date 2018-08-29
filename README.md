@@ -8,7 +8,7 @@ For security, the config module was removed.
 To run the application create a config directory with an ```__init__.py``` file.
 
 In the ```__init__.py``` save the variable 
-DATABASE_URI = 'mysql://<user_name>:<password>@<end_point>/<database_name>'
+```DATABASE_URI = 'mysql://<user_name>:<password>@<end_point>/<database_name>'```
 
 Replace the variable with your database info.
 
