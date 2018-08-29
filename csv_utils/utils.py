@@ -1,5 +1,5 @@
 import re
-
+from app import db
 ALLOWED_EXTENSIONS = {'txt', 'csv'}
 
 
@@ -11,12 +11,20 @@ def valid_header(row):
     return row[0].lower() == 'parent' and row[1].lower() == 'child' and row[2].lower() == 'quantity'
 
 
-def put_csv(lines, db):
+def import_csv(lines, user_id):
+    edges = db.metadata.tables['edge']
+    connection = db.engine.connect()
+
     for i, line in enumerate(lines):
         row = line.strip().split(',')
-
-        db.execute_command('INSERT INTO Edges (parent, child, quantity) '
-                           'VALUES ("{}", "{}", {});'.format(row[0], row[1], row[2]))
+        insert = edges.insert().values(
+            parent=row[0],
+            child=row[1],
+            quantity=row[2],
+            user_id=user_id
+        )
+        connection.execute(insert)
+    connection.close()
 
 
 def valid_rows(lines):

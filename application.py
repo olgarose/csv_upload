@@ -1,50 +1,40 @@
-from flask import Flask, render_template, request, url_for, g, flash
-from flask_login import LoginManager, current_user, login_user, login_required
+from flask import render_template, request, url_for, flash
+from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.utils import redirect
+from werkzeug.urls import url_parse
 
-from csv_utils.utils import valid_filename, valid_rows, put_csv
-import database as db
-from models import User, LoginForm
-
-application = Flask(__name__)
-login_manager = LoginManager()
-
-login_manager.init_app(application)
-db.init(application)
-
-application.config['SECRET_KEY'] = 'the secretest key'
+from csv_utils.utils import valid_filename, valid_rows, import_csv
+from app import app, db
+from app.models import User
+from app.forms import LoginForm, RegistrationForm
 
 
-@application.route('/')
+@app.route('/')
+@app.route('/index')
 def index():
     return render_template('index.html')
 
 
-@application.route('/upload')
+@app.route('/upload')
 @login_required
 def upload():
     return render_template('upload.html')
 
 
-@application.route('/message', methods=['GET', 'POST'])
+@app.route('/message', methods=['GET', 'POST'])
 @login_required
 def upload_file():
     if request.method == 'POST':
         uploaded_file = request.files['file']
         lines = uploaded_file.readlines()
         if valid_filename(uploaded_file) and valid_rows(lines):
-            put_csv(lines[1:], db)
+            import_csv(lines[1:], current_user.get_id())
             return render_template('thanks.html')
         else:
             return render_template('error.html')
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
-
-@application.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -55,9 +45,33 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for('index'))
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congrats, you are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+
 if __name__ == '__main__':
-    application.run()
+    app.run()
