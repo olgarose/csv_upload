@@ -1,3 +1,5 @@
+import re
+
 ALLOWED_EXTENSIONS = {'txt', 'csv'}
 
 
@@ -25,5 +27,20 @@ def valid_rows(lines):
     return True
 
 
-def valid_name(f):
+def valid_filename(f):
     return '.' in f.filename and f.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+username_regex = re.compile("^[a-zA-Z]+[a-zA-Z0-9_]{2,}$")
+
+USERNAME_RULES = ('Username must contain only letters, numbers, and underscores, must start with a letter and be at '
+                  'least 3 characters long.')
+
+
+def valid_username(username):
+    """Validate the username.
+    :param username: The user name.
+    :raises ValueError: If validation fails.
+    """
+    if not username_regex.match(username):
+        raise ValueError(USERNAME_RULES)
