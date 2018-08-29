@@ -44,4 +44,4 @@ Head to http://127.0.0.1:5000/
 
 ## Built With
 
-* [Flask](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+* [Flask](http://flask.pocoo.org/docs/) - The web framework used
