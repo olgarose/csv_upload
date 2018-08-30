@@ -1,0 +1,19 @@
+csv_app/config
+csv_app/config.py
+.pytest_cache/
+
+.pytest_cache/
+config/
+env/
+*.pyc
+__pycache__/
+venv/
+DAG.csv
+.ebextensions/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+.ebignore
+.idea
