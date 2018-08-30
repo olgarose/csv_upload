@@ -3,10 +3,10 @@ from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.utils import redirect
 from werkzeug.urls import url_parse
 
-from csv_utils.utils import valid_filename, valid_rows, import_csv
+from utils import valid_filename, valid_rows, import_csv
 from app import app, db
-from app.models import User
-from app.forms import LoginForm, RegistrationForm
+from models import User
+from forms import LoginForm, RegistrationForm
 
 
 @app.route('/')
