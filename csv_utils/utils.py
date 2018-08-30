@@ -1,5 +1,8 @@
 import re
 from app import db
+from flask_login import current_user
+from sqlalchemy import and_
+
 ALLOWED_EXTENSIONS = {'txt', 'csv'}
 
 
@@ -11,21 +14,46 @@ def valid_header(row):
     return row[0].lower() == 'parent' and row[1].lower() == 'child' and row[2].lower() == 'quantity'
 
 
-def import_csv(lines, user_id):
-    edges = db.metadata.tables['edge']
+def import_csv(lines):
     connection = db.engine.connect()
 
-    #TODO: Update if exists
-    for i, line in enumerate(lines):
+    for line in lines:
         row = line.strip().split(',')
-        insert = edges.insert().values(
-            parent=row[0],
-            child=row[1],
-            quantity=row[2],
-            user_id=user_id
-        )
-        connection.execute(insert)
+        parent, child, quantity = row[0], row[1], row[2]
+        cmd = update_edge(parent, child, quantity) if edge_exists(parent, child) else insert_edge(parent, child, quantity)
+        connection.execute(cmd)
+
     connection.close()
+
+
+def insert_edge(parent, child, quantity):
+    edges = db.metadata.tables['edge']
+    return edges.insert().values(
+        parent=parent,
+        child=child,
+        quantity=quantity,
+        user_id=current_user.get_id()
+    )
+
+
+def update_edge(parent, child, quantity):
+    edges = db.metadata.tables['edge']
+    return edges.update().values(
+        quantity=quantity). \
+        where(and_(
+        edges.c.parent == parent,
+        edges.c.child == child))
+
+
+def edge_exists(parent, child):
+    edges = db.metadata.tables['edge']
+    connection = db.engine.connect()
+    query = edges.select().where(and_(
+        edges.c.parent == parent,
+        edges.c.child == child))
+    result = connection.execute(query)
+    connection.close()
+    return result.first()
 
 
 def valid_rows(lines):

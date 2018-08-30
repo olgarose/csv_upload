@@ -28,7 +28,7 @@ def upload_file():
         uploaded_file = request.files['file']
         lines = uploaded_file.readlines()
         if valid_filename(uploaded_file) and valid_rows(lines):
-            import_csv(lines[1:], current_user.get_id())
+            import_csv(lines[1:])
             return render_template('thanks.html')
         else:
             return render_template('error.html')
