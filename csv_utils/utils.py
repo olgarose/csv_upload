@@ -15,6 +15,7 @@ def import_csv(lines, user_id):
     edges = db.metadata.tables['edge']
     connection = db.engine.connect()
 
+    #TODO: Update if exists
     for i, line in enumerate(lines):
         row = line.strip().split(',')
         insert = edges.insert().values(
