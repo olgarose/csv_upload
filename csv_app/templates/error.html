@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}Err{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" type="text/css" href="style.css">
+<div class="col-md-4 col-md-offset-4">
+      <div align="center">
+        <h2>Could not upload file. Make sure you're uploading a valid CSV.</h2>
+      </div>
+
+    <div align="center">
+        <p><a href="upload"><button type="submit" class="btn btn-primary">Return home</button></a></p>
+    </div>
+</div>
+
+{% endblock %}

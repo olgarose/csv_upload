@@ -1,5 +1,5 @@
 import re
-from app import db
+from csv_app import db
 from flask_login import current_user
 from sqlalchemy import and_
 

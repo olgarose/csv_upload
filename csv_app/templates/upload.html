@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}Upload{% endblock %}
+
+{% block body %}
+
+      <div align="center">
+        <h2>Upload your file here</h2>
+
+      <form action = "message" method = "POST" enctype = "multipart/form-data">
+          <br><br><br>
+         <input type = "file" name = "file" />
+          <br><br>
+          <a href="upload"><button type="submit" class="btn btn-primary">Submit</button></a>
+      </form>
+      </div>
+{% endblock %}
