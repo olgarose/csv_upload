@@ -6,22 +6,22 @@ from werkzeug.urls import url_parse
 from csv_app.utils import valid_filename, valid_rows, import_csv
 from csv_app.models import User
 from csv_app.forms import LoginForm, RegistrationForm
-from csv_app import app, db
+from csv_app import application, db
 
 
-@app.route('/')
-@app.route('/index')
+@application.route('/')
+@application.route('/index')
 def index():
     return render_template('index.html')
 
 
-@app.route('/upload')
+@application.route('/upload')
 @login_required
 def upload():
     return render_template('upload.html')
 
 
-@app.route('/message', methods=['GET', 'POST'])
+@application.route('/message', methods=['GET', 'POST'])
 @login_required
 def upload_file():
     if request.method == 'POST':
@@ -34,7 +34,7 @@ def upload_file():
             return render_template('error.html')
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@application.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -52,13 +52,13 @@ def login():
     return render_template('login.html', title='Sign In', form=form)
 
 
-@app.route('/logout')
+@application.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@application.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -74,4 +74,4 @@ def register():
 
 
 if __name__ == '__main__':
-    app.run()
+    application.run()

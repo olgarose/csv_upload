@@ -4,11 +4,11 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from config import Config
 
-app = Flask(__name__)
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-login_manager = LoginManager(app)
+application = Flask(__name__)
+application.config.from_object(Config)
+db = SQLAlchemy(application)
+migrate = Migrate(application, db)
+login_manager = LoginManager(application)
 login_manager.login_view = 'login'
 
 from csv_app import models
